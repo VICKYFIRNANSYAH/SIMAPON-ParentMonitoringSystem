@@ -1,2 +1,6 @@
 venv_linux/
 venv_windows/
+
+__pycache__/
+*.pyc
+db.sqlite3

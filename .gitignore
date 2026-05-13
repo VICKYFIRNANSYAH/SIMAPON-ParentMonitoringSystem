@@ -1,8 +1,8 @@
-venv_linux/
-venv_windows/
+# venv_linux/
+# venv_windows/
 
-__pycache__/
-*.pyc
-db.sqlite3
+# __pycache__/
+# *.pyc
+# db.sqlite3
 
-run.txt/
+# run.txt/

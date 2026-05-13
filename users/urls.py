@@ -11,4 +11,9 @@ urlpatterns = [
     path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
     path('dashboard/guru/', views.guru_dashboard, name='guru_dashboard'),
     path('dashboard/parent/', views.parent_dashboard, name='parent_dashboard'),
+    path('dashboard/admin/guru/', views.admin_guru_list, name='admin_guru_list'),
+    path('dashboard/admin/santri/', views.admin_santri_list, name='admin_santri_list'),
+    path('dashboard/admin/finance/', views.admin_finance_list, name='admin_finance_list'),
+    path('dashboard/admin/permit/', views.admin_permit_list, name='admin_permit_list'),
+    path('dashboard/admin/behavior/', views.admin_behavior_list, name='admin_behavior_list'),
 ]

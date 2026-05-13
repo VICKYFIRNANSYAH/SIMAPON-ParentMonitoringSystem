@@ -30,3 +30,10 @@ class ParentRegistrationForm(forms.ModelForm):
             self.add_error('student_nis', "NIS sudah terdaftar.")
 
         return cleaned_data
+
+class GuruRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label="Password")
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'phone_number']

@@ -1,0 +1,60 @@
+{% extends 'dashboards/admin_base.html' %}
+
+{% block admin_content %}
+<div class="mb-8 flex justify-between items-center">
+    <div>
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            Data Perizinan
+        </h2>
+        <p class="mt-1 text-sm text-gray-500">Persetujuan izin pulang atau sakit santri.</p>
+    </div>
+</div>
+
+<div class="bg-white shadow sm:rounded-lg overflow-hidden">
+    <div class="p-6">
+        <table class="datatable w-full text-left text-sm text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3">Tanggal Diajukan</th>
+                    <th class="px-6 py-3">Nama Santri</th>
+                    <th class="px-6 py-3">Mulai - Kembali</th>
+                    <th class="px-6 py-3">Alasan</th>
+                    <th class="px-6 py-3">Status</th>
+                    <th class="px-6 py-3">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permit in permits %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ permit.created_at|date:"d M Y" }}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ permit.student.name }}</td>
+                    <td class="px-6 py-4">{{ permit.start_date|date:"d/m" }} - {{ permit.end_date|date:"d/m" }}</td>
+                    <td class="px-6 py-4 truncate max-w-xs">{{ permit.reason }}</td>
+                    <td class="px-6 py-4">
+                        {% if permit.status == 'disetujui' %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
+                        {% elif permit.status == 'ditolak' %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
+                        {% else %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if permit.status == 'menunggu' %}
+                        <form method="POST" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="permit_id" value="{{ permit.id }}">
+                            <button type="submit" name="action" value="approve" class="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-xs px-3 py-1.5 mr-2">Setujui</button>
+                            <button type="submit" name="action" value="reject" class="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-xs px-3 py-1.5">Tolak</button>
+                        </form>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

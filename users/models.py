@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
+    # Multiple admin users can be created by setting is_admin=True
     is_admin = models.BooleanField(default=False)
     is_guru = models.BooleanField(default=False)
     is_parent = models.BooleanField(default=False)

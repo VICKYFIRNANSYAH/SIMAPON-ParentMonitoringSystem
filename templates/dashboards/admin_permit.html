@@ -1,60 +1,165 @@
-{% extends 'dashboards/admin_base.html' %}
-
-{% block admin_content %}
+{% extends 'dashboards/admin_base.html' %} {% block admin_content %}
 <div class="mb-8 flex justify-between items-center">
-    <div>
-        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            Data Perizinan
-        </h2>
-        <p class="mt-1 text-sm text-gray-500">Persetujuan izin pulang atau sakit santri.</p>
-    </div>
+  <div>
+    <h2
+      class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
+    >
+      Data Perizinan
+    </h2>
+    <p class="mt-1 text-sm text-gray-500">
+      Persetujuan izin pulang atau sakit santri.
+    </p>
+  </div>
 </div>
 
 <div class="bg-white shadow sm:rounded-lg overflow-hidden">
-    <div class="p-6">
-        <table class="datatable w-full text-left text-sm text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3">Tanggal Diajukan</th>
-                    <th class="px-6 py-3">Nama Santri</th>
-                    <th class="px-6 py-3">Mulai - Kembali</th>
-                    <th class="px-6 py-3">Alasan</th>
-                    <th class="px-6 py-3">Status</th>
-                    <th class="px-6 py-3">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for permit in permits %}
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="px-6 py-4">{{ permit.created_at|date:"d M Y" }}</td>
-                    <td class="px-6 py-4 font-medium text-gray-900">{{ permit.student.name }}</td>
-                    <td class="px-6 py-4">{{ permit.start_date|date:"d/m" }} - {{ permit.end_date|date:"d/m" }}</td>
-                    <td class="px-6 py-4 truncate max-w-xs">{{ permit.reason }}</td>
-                    <td class="px-6 py-4">
-                        {% if permit.status == 'disetujui' %}
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
-                        {% elif permit.status == 'ditolak' %}
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
-                        {% else %}
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4">
-                        {% if permit.status == 'menunggu' %}
-                        <form method="POST" class="inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="permit_id" value="{{ permit.id }}">
-                            <button type="submit" name="action" value="approve" class="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-xs px-3 py-1.5 mr-2">Setujui</button>
-                            <button type="submit" name="action" value="reject" class="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-xs px-3 py-1.5">Tolak</button>
-                        </form>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="p-6">
+    <table class="datatable w-full text-left text-sm text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <th class="px-6 py-3">Tanggal Diajukan</th>
+          <th class="px-6 py-3">Nama Santri</th>
+          <th class="px-6 py-3">Mulai - Kembali</th>
+          <th class="px-6 py-3">Alasan</th>
+          <th class="px-6 py-3">Status</th>
+          <th class="px-6 py-3">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for permit in permits %}
+        <tr class="border-b hover:bg-gray-50">
+          <td class="px-6 py-4">{{ permit.created_at|date:"d M Y" }}</td>
+          <td class="px-6 py-4 font-medium text-gray-900">
+            {{ permit.student.name }}
+          </td>
+          <td class="px-6 py-4">
+            {{ permit.start_date|date:"d/m" }} - {{ permit.end_date|date:"d/m"
+            }}
+          </td>
+          <td class="px-6 py-4 truncate max-w-xs">{{ permit.reason }}</td>
+          <td class="px-6 py-4">
+            {% if permit.status == 'disetujui' %}
+            <span
+              class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800"
+              >Disetujui</span
+            >
+            {% elif permit.status == 'ditolak' %}
+            <span
+              class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"
+              >Ditolak</span
+            >
+            {% else %}
+            <span
+              class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800"
+              >Menunggu</span
+            >
+            {% endif %}
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-2">
+              <a
+                href="{% url 'edit_permit' permit.id %}"
+                class="text-blue-600 hover:text-blue-900"
+                title="Edit Izin"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </a>
+              <form method="POST" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="permit_id" value="{{ permit.id }}" />
+                <button
+                  type="submit"
+                  name="action"
+                  value="delete"
+                  class="text-red-600 hover:text-red-900"
+                  title="Hapus Izin"
+                  onclick="return confirm('Hapus permintaan izin ini?');"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </form>
+              {% if permit.status == 'menunggu' %}
+              <form method="POST" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="permit_id" value="{{ permit.id }}" />
+                <button
+                  type="submit"
+                  name="action"
+                  value="approve"
+                  class="text-green-600 hover:text-green-800"
+                  title="Setujui"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </button>
+              </form>
+              <form method="POST" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="permit_id" value="{{ permit.id }}" />
+                <button
+                  type="submit"
+                  name="action"
+                  value="reject"
+                  class="text-red-600 hover:text-red-800"
+                  title="Tolak"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

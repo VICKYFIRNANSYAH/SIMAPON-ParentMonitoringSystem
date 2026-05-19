@@ -13,3 +13,8 @@ class StudentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['parent'].queryset = User.objects.filter(is_parent=True)
+        self.fields['parent'].required = False
+        self.fields['photo'].required = False
+
+class ImportStudentForm(forms.Form):
+    xlsx_file = forms.FileField(label="Upload Data Santri (.xlsx/.csv)")

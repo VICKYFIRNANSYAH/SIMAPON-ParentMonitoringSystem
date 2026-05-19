@@ -1,1 +1,10 @@
+Windows
+./venv_windows/Scripts/python.exe manage.py runserver 0.0.0.0:8000
+
+linux
 ./venv_linux/bin/python manage.py runserver 0.0.0.0:8000
+
+
+For public
+open in new terminal
+cloudflared tunnel --url http://localhost:8000

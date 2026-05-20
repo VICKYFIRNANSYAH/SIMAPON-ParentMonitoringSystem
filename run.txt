@@ -1,10 +1,26 @@
-Windows
-./venv_windows/Scripts/python.exe manage.py runserver 0.0.0.0:8000
+Install library first : 
+- pip install -r requirements.txt
 
-linux
-./venv_linux/bin/python manage.py runserver 0.0.0.0:8000
+Migrate database : 
+- python manage.py migrate
 
+Buat superuser (Admin) : 
+- python manage.py createsuperuser
 
-For public
-open in new terminal
-cloudflared tunnel --url http://localhost:8000
+=== CARA MENJALANKAN SERVER SIMAPON ===
+
+1. SERVER LOKAL (LINUX / MACOS)
+-------------------------------
+Buka terminal, pastikan Anda berada di folder proyek, lalu jalankan:
+$ ./venv_linux/bin/python manage.py runserver 0.0.0.0:8000
+
+2. SERVER LOKAL (WINDOWS)
+-------------------------
+Buka terminal/CMD, pastikan Anda berada di folder proyek, lalu jalankan:
+> .\venv_windows\Scripts\python.exe manage.py runserver 0.0.0.0:8000
+
+3. AKSES PUBLIK (CLOUDFLARED TUNNEL)
+------------------------------------
+Biarkan server lokal tetap berjalan di terminal pertama.
+Buka terminal BARU, lalu jalankan perintah berikut:
+$ cloudflared tunnel --url http://localhost:8000

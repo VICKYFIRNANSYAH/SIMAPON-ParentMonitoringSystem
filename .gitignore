@@ -1,5 +1,5 @@
-venv_linux/
-venv_windows/
+# venv_linux/
+# venv_windows/
 
 # __pycache__/
 # *.pyc

@@ -125,10 +125,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# Use leading slashes for URL prefixes so they are not considered inside one another
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-MEDIA_URL = 'static/media/'
+# Media files (uploaded by users)
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'static' / 'media'
 
 AUTH_USER_MODEL = 'users.User'

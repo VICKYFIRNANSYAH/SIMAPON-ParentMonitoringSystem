@@ -155,6 +155,7 @@ def parent_dashboard(request):
 
     children_count = children.count()
     pending_payments_count = payments.exclude(status='lunas').count()
+    behavior_notes = BehaviorNote.objects.filter(student__parent=request.user).select_related('student').order_by('-date', '-id')
 
     return render(
         request,
@@ -164,6 +165,7 @@ def parent_dashboard(request):
             'payments': payments,
             'children_count': children_count,
             'pending_payments_count': pending_payments_count,
+            'behavior_notes': behavior_notes,
         },
     )
 

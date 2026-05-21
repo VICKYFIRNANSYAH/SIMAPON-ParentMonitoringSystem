@@ -211,5 +211,66 @@
       </table>
     </div>
   </div>
+
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-8">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Catatan Perilaku & Sikap Santri</h3>
+        <p class="mt-1 text-sm text-gray-600">
+          Catatan prestasi dan pelanggaran disiplin anak Anda yang diinput oleh Ustadz/Admin.
+        </p>
+      </div>
+    </div>
+    <div class="p-6 overflow-x-auto">
+      <table class="datatable w-full text-left text-sm text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+          <tr>
+            <th class="px-6 py-3">Tanggal</th>
+            <th class="px-6 py-3">Nama Anak</th>
+            <th class="px-6 py-3">Kategori</th>
+            <th class="px-6 py-3">Deskripsi / Catatan</th>
+            <th class="px-6 py-3">Poin</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for note in behavior_notes %}
+          <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">{{ note.date|date:"d M Y" }}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">
+              {{ note.student.name }}
+            </td>
+            <td class="px-6 py-4">
+              {% if note.category == 'prestasi' %}
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                Prestasi
+              </span>
+              {% else %}
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                Pelanggaran
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4">
+              {{ note.description }}
+            </td>
+            <td class="px-6 py-4 font-bold">
+              {% if note.category == 'prestasi' %}
+              <span class="text-green-600">+{{ note.points }} Poin</span>
+              {% else %}
+              <span class="text-red-600">-{{ note.points }} Poin</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+              Belum ada catatan perilaku untuk anak Anda.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

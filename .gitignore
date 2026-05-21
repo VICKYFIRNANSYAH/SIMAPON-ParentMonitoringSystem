@@ -2,7 +2,18 @@
 # venv_windows/
 
 # __pycache__/
-# *.pyc
+# *.py[cod]
+# *.pyo
+# *.pyd
+# __pypackages__/
+
+# # Local development files
 # db.sqlite3
 # media/
-# run.txt
+
+# # Optional files
+# .DS_Store
+# .env
+
+# # Django static artifacts
+# staticfiles/

@@ -1,26 +1,53 @@
-Instal dependensi:
-- pip install -r requirements.txt
+======================================================================
+                 PANDUAN MENJALANKAN APLIKASI SIMAPON
+======================================================================
 
-Migrasi database:
-- python manage.py migrate
+Dokumen ini berisi petunjuk singkat untuk memasang dependensi dan
+menjalankan server lokal SIMAPON pada berbagai sistem operasi.
 
-Buat superuser (Admin) : 
-- python manage.py createsuperuser
+----------------------------------------------------------------------
+Langkah 1: Pasang Dependensi Proyek
+----------------------------------------------------------------------
+Pastikan Anda sudah berada di dalam folder proyek SIMAPON, lalu pasang
+seluruh pustaka yang diperlukan dengan menjalankan perintah berikut:
 
-=== CARA MENJALANKAN SERVER SIMAPON ===
+$ pip install -r requirements.txt
 
-1. SERVER LOKAL (LINUX / MACOS)
--------------------------------
-Buka terminal, pastikan Anda berada di folder proyek, lalu jalankan:
-$ ./venv_linux/bin/python manage.py runserver 0.0.0.0:8000
+----------------------------------------------------------------------
+Langkah 2: Migrasi Database
+----------------------------------------------------------------------
+Proyek ini sudah dilengkapi dengan database SQLite bawaan (db.sqlite3) 
+yang berisi data dummy lengkap. Jika Anda ingin melakukan migrasi 
+terbaru, jalankan:
 
-2. SERVER LOKAL (WINDOWS)
--------------------------
-Buka terminal/CMD, pastikan Anda berada di folder proyek, lalu jalankan:
-> .\venv_windows\Scripts\python.exe manage.py runserver 0.0.0.0:8000
+$ python manage.py migrate
 
-3. AKSES PUBLIK (CLOUDFLARED TUNNEL)
-------------------------------------
-Biarkan server lokal tetap berjalan di terminal pertama.
-Buka terminal BARU, lalu jalankan perintah berikut:
-$ cloudflared tunnel --url http://localhost:8000
+----------------------------------------------------------------------
+Langkah 3: Jalankan Server SIMAPON
+----------------------------------------------------------------------
+Pilih salah satu perintah di bawah ini sesuai dengan sistem operasi 
+dan environment yang Anda gunakan:
+
+1. MENGGUNAKAN PYTHON SISTEM LOKAL (Direkomendasikan & Portabel)
+   $ python manage.py runserver 0.0.0.0:8000
+
+2. LINUX / MACOS (Menggunakan Virtual Environment Bawaan)
+   $ ./venv_linux/bin/python manage.py runserver 0.0.0.0:8000
+
+3. WINDOWS (Menggunakan Virtual Environment Bawaan)
+   > .\venv_windows\Scripts\python.exe manage.py runserver 0.0.0.0:8000
+
+----------------------------------------------------------------------
+Langkah 4: Akses Aplikasi
+----------------------------------------------------------------------
+Buka browser Anda dan akses tautan lokal berikut:
+-> http://127.0.0.1:8000/
+
+----------------------------------------------------------------------
+Langkah 5: Akses Publik (Cloudflared Tunnel - Opsional)
+----------------------------------------------------------------------
+Jika ingin membagikan akses server lokal Anda ke luar secara publik:
+1. Biarkan server lokal di atas tetap berjalan.
+2. Buka terminal baru, lalu jalankan perintah tunnel:
+   $ cloudflared tunnel --url http://localhost:8000
+======================================================================

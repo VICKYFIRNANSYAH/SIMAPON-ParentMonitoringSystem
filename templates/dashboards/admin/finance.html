@@ -1,0 +1,139 @@
+{% extends 'dashboards/admin/base.html' %} {% block admin_content %}
+<div class="mb-8 flex justify-between items-center">
+  <div>
+    <h2
+      class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
+    >
+      Data Keuangan (SPP)
+    </h2>
+    <p class="mt-1 text-sm text-gray-500">
+      Verifikasi bukti pembayaran SPP Santri.
+    </p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-1">
+    <div class="bg-white shadow sm:rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Buat Tagihan Wali Murid
+        </h3>
+        <p class="mt-1 text-sm text-gray-600">
+          Pilih santri, periode, dan nominal tagihan SPP yang akan muncul di dashboard wali murid.
+        </p>
+        <form method="POST" class="mt-5 space-y-4">
+          {% csrf_token %}
+          {% for field in payment_form %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+              {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary w-full">
+            Buat Tagihan
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-2">
+    <div class="bg-white shadow sm:rounded-lg overflow-hidden">
+      <div class="p-6">
+        <table class="datatable w-full text-left text-sm text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th class="px-6 py-3">Tanggal</th>
+              <th class="px-6 py-3">Nama Santri</th>
+              <th class="px-6 py-3">Periode</th>
+              <th class="px-6 py-3">Jumlah</th>
+              <th class="px-6 py-3">Bukti</th>
+              <th class="px-6 py-3">Status</th>
+              <th class="px-6 py-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-6 py-4">{{ payment.created_at|date:"d M Y" }}</td>
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ payment.student.name }}
+              </td>
+              <td class="px-6 py-4">{{ payment.month }} {{ payment.year }}</td>
+              <td class="px-6 py-4">Rp {{ payment.amount }}</td>
+              <td class="px-6 py-4">
+                {% if payment.payment_proof %}
+                <a href="{{ payment.payment_proof.url }}" target="_blank" class="text-primary hover:text-secondary">
+                  Lihat bukti
+                </a>
+                {% else %} - {% endif %}
+              </td>
+              <td class="px-6 py-4">
+                {% if payment.status == 'lunas' %}
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Lunas</span>
+                {% elif payment.status == 'ditolak' %}
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
+                {% else %}
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
+                {% endif %}
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  {% if payment.status == 'menunggu' %}
+                  <form method="POST" class="inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_id" value="{{ payment.id }}" />
+                    <button type="submit" name="action" value="approve" class="text-green-600 hover:text-green-800" title="Setujui">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </button>
+                  </form>
+                  <form method="POST" class="inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_id" value="{{ payment.id }}" />
+                    <button type="submit" name="action" value="reject" class="text-red-600 hover:text-red-800" title="Tolak">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </form>
+                  {% endif %}
+                  <a href="{% url 'edit_finance' payment.id %}" class="text-blue-600 hover:text-blue-900" title="Edit">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </a>
+                  <form method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tagihan ini?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete" />
+                    <input type="hidden" name="payment_id" value="{{ payment.id }}" />
+                    <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                Belum ada tagihan SPP.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -13,5 +13,9 @@ class BehaviorNote(models.Model):
     points = models.IntegerField(verbose_name="Poin")
     date = models.DateField(auto_now_add=True, verbose_name="Tanggal")
 
+    class Meta:
+        db_table = 'simapon_catatan_perilaku'
+
     def __str__(self):
         return f"{self.category.capitalize()} - {self.student.name} ({self.points} Poin)"
+

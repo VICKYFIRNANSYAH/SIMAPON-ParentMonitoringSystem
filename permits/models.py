@@ -14,6 +14,10 @@ class Permit(models.Model):
     end_date = models.DateField(verbose_name="Tanggal Kembali")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='menunggu')
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
+    class Meta:
+        db_table = 'simapon_perizinan'
+
     def __str__(self):
         return f"Izin {self.student.name} ({self.start_date} - {self.end_date})"
+

@@ -23,4 +23,8 @@ urlpatterns = [
     path('dashboard/admin/edit-parent/<int:parent_id>/', views.edit_parent, name='edit_parent'),
     path('dashboard/admin/edit-santri/<int:santri_id>/', views.edit_santri, name='edit_santri'),
     path('dashboard/admin/edit-guru/<int:guru_id>/', views.edit_guru, name='edit_guru'),
+    path('dashboard/profile/upload/', views.upload_profile_picture, name='upload_profile_picture'),
+    path('notifications/mark-read/<int:notification_id>/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/mark-all-read/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
 ]
+

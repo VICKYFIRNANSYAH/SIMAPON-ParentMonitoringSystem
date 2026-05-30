@@ -10,13 +10,17 @@ from django.db.models import Q
 from .forms import ParentRegistrationForm, GuruRegistrationForm, ImportFileForm
 from students.models import Student
 from students.forms import StudentForm, ImportStudentForm
-from users.models import User
+from users.models import User, Notification
+from django.http import JsonResponse
 from finance.models import Payment
 from finance.forms import PaymentForm
 from permits.models import Permit
 from permits.forms import PermitForm
 from behavior.forms import BehaviorNoteForm
 from behavior.models import BehaviorNote
+from .reports import AdminDashboardReport, GuruDashboardReport, ParentDashboardReport
+
+
 
 
 def parse_import_file(uploaded_file):
@@ -118,24 +122,52 @@ def admin_dashboard(request):
     if not (request.user.is_admin or request.user.is_staff):
         return redirect('dashboard')
 
-    context = {
-        'total_guru': User.objects.filter(is_guru=True).count(),
-        'total_santri': Student.objects.count(),
-        'total_spp_pending': Payment.objects.filter(status='menunggu').count(),
-        'total_izin_pending': Permit.objects.filter(status='menunggu').count(),
-    }
-    return render(request, 'dashboards/admin.html', context)
+    report = AdminDashboardReport(request.user)
+    context = report.get_summary()
+    return render(request, 'dashboards/admin/index.html', context)
+
 
 
 @login_required
 def guru_dashboard(request):
-    return render(request, 'dashboards/guru.html')
+    if not request.user.is_guru:
+        return redirect('dashboard')
+
+    form = BehaviorNoteForm()
+    if request.method == 'POST':
+        if request.POST.get('submit_type') == 'behavior_note':
+            form = BehaviorNoteForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Catatan sikap santri berhasil ditambahkan.')
+                return redirect('guru_dashboard')
+        else:
+            permit_id = request.POST.get('permit_id')
+            action = request.POST.get('action')
+            if action in ['approve', 'reject'] and permit_id:
+                try:
+                    permit = Permit.objects.get(id=permit_id)
+                    permit.status = 'disetujui' if action == 'approve' else 'ditolak'
+                    permit.save()
+                    messages.success(request, f'Permintaan izin {permit.student.name} berhasil diperbarui.')
+                except Permit.DoesNotExist:
+                    messages.error(request, 'Data izin tidak ditemukan.')
+                return redirect('guru_dashboard')
+
+    report = GuruDashboardReport(request.user)
+    summary = report.get_summary()
+    context = {
+        'form': form,
+        **summary,
+        'permits': Permit.objects.all().select_related('student').order_by('-created_at')[:20],
+        'behavior_notes': BehaviorNote.objects.all().select_related('student').order_by('-date', '-id')[:20],
+    }
+    return render(request, 'dashboards/guru/index.html', context)
 
 
 @login_required
 def parent_dashboard(request):
     children = request.user.children.all()
-    payments = Payment.objects.filter(student__parent=request.user).select_related('student').order_by('-created_at')
 
     if request.method == 'POST' and 'payment_id' in request.POST:
         payment_id = request.POST.get('payment_id')
@@ -150,24 +182,34 @@ def parent_dashboard(request):
             else:
                 messages.error(request, 'Mohon unggah bukti pembayaran berupa gambar.')
         except Payment.DoesNotExist:
-            messages.error(request, 'Tagihan tidak ditemukan.')
+                messages.error(request, 'Tagihan tidak ditemukan.')
         return redirect('parent_dashboard')
 
-    children_count = children.count()
-    pending_payments_count = payments.exclude(status='lunas').count()
-    behavior_notes = BehaviorNote.objects.filter(student__parent=request.user).select_related('student').order_by('-date', '-id')
+    if request.method == 'POST' and request.POST.get('submit_type') == 'permit_request':
+        student_id = request.POST.get('student')
+        reason = request.POST.get('reason')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        try:
+            student = children.get(id=student_id)
+            if not reason or not start_date or not end_date:
+                messages.error(request, 'Mohon lengkapi semua data pengajuan izin.')
+            else:
+                Permit.objects.create(
+                    student=student,
+                    reason=reason,
+                    start_date=start_date,
+                    end_date=end_date,
+                    status='menunggu',
+                )
+                messages.success(request, 'Pengajuan izin berhasil dikirim. Tunggu persetujuan guru/admin.')
+        except Student.DoesNotExist:
+            messages.error(request, 'Data anak tidak valid untuk pengajuan izin.')
+        return redirect('parent_dashboard')
 
-    return render(
-        request,
-        'dashboards/parent.html',
-        {
-            'children': children,
-            'payments': payments,
-            'children_count': children_count,
-            'pending_payments_count': pending_payments_count,
-            'behavior_notes': behavior_notes,
-        },
-    )
+    report = ParentDashboardReport(request.user)
+    context = report.get_summary()
+    return render(request, 'dashboards/parent/index.html', context)
 
 
 @login_required
@@ -225,7 +267,7 @@ def admin_guru_list(request):
                 return redirect('admin_guru_list')
 
     gurus = User.objects.filter(is_guru=True)
-    return render(request, 'dashboards/admin_guru.html', {'gurus': gurus, 'form': form, 'import_form': import_form})
+    return render(request, 'dashboards/admin/guru.html', {'gurus': gurus, 'form': form, 'import_form': import_form})
 
 
 @login_required
@@ -304,7 +346,7 @@ def admin_santri_list(request):
                 return redirect('admin_santri_list')
 
     santris = Student.objects.all().select_related('parent')
-    return render(request, 'dashboards/admin_santri.html', {'santris': santris, 'form': form, 'import_form': import_form})
+    return render(request, 'dashboards/admin/santri.html', {'santris': santris, 'form': form, 'import_form': import_form})
 
 
 @login_required
@@ -342,7 +384,7 @@ def admin_finance_list(request):
             return redirect('admin_finance_list')
 
     payments = Payment.objects.all().select_related('student').order_by('-created_at')
-    return render(request, 'dashboards/admin_finance.html', {'payments': payments, 'payment_form': payment_form})
+    return render(request, 'dashboards/admin/finance.html', {'payments': payments, 'payment_form': payment_form})
 
 @login_required
 def admin_permit_list(request):
@@ -372,7 +414,7 @@ def admin_permit_list(request):
             return redirect('admin_permit_list')
 
     permits = Permit.objects.all().select_related('student').order_by('-created_at')
-    return render(request, 'dashboards/admin_permit.html', {'permits': permits})
+    return render(request, 'dashboards/admin/permit.html', {'permits': permits})
 
 @login_required
 def admin_behavior_list(request):
@@ -399,7 +441,7 @@ def admin_behavior_list(request):
         form = BehaviorNoteForm()
 
     behaviors = BehaviorNote.objects.all().select_related('student').order_by('-date', '-id')
-    return render(request, 'dashboards/admin_behavior.html', {'behaviors': behaviors, 'form': form})
+    return render(request, 'dashboards/admin/behavior.html', {'behaviors': behaviors, 'form': form})
 
 @login_required
 def edit_finance(request, payment_id):
@@ -415,7 +457,7 @@ def edit_finance(request, payment_id):
             return redirect('admin_finance_list')
     else:
         form = PaymentForm(instance=payment)
-    return render(request, 'dashboards/edit_finance.html', {'form': form, 'payment': payment})
+    return render(request, 'dashboards/admin/edit_finance.html', {'form': form, 'payment': payment})
 
 @login_required
 def edit_permit(request, permit_id):
@@ -431,7 +473,7 @@ def edit_permit(request, permit_id):
             return redirect('admin_permit_list')
     else:
         form = PermitForm(instance=permit)
-    return render(request, 'dashboards/edit_permit.html', {'form': form, 'permit': permit})
+    return render(request, 'dashboards/admin/edit_permit.html', {'form': form, 'permit': permit})
 
 @login_required
 def edit_behavior(request, behavior_id):
@@ -447,7 +489,7 @@ def edit_behavior(request, behavior_id):
             return redirect('admin_behavior_list')
     else:
         form = BehaviorNoteForm(instance=behavior)
-    return render(request, 'dashboards/edit_behavior.html', {'form': form, 'behavior': behavior})
+    return render(request, 'dashboards/admin/edit_behavior.html', {'form': form, 'behavior': behavior})
 
 
 @login_required
@@ -468,7 +510,7 @@ def admin_parent_list(request):
             return redirect('admin_parent_list')
 
     parents = User.objects.filter(is_parent=True).prefetch_related('children')
-    return render(request, 'dashboards/admin_parent.html', {'parents': parents})
+    return render(request, 'dashboards/admin/parent.html', {'parents': parents})
 
 
 @login_required
@@ -491,7 +533,7 @@ def edit_parent(request, parent_id):
         messages.success(request, 'Data Wali Murid berhasil diubah.')
         return redirect('admin_parent_list')
 
-    return render(request, 'dashboards/edit_parent.html', {'parent': parent})
+    return render(request, 'dashboards/admin/edit_parent.html', {'parent': parent})
 
 
 @login_required
@@ -511,7 +553,7 @@ def edit_santri(request, santri_id):
     else:
         form = StudentForm(instance=santri)
 
-    return render(request, 'dashboards/edit_santri.html', {'form': form, 'santri': santri})
+    return render(request, 'dashboards/admin/edit_santri.html', {'form': form, 'santri': santri})
 
 
 @login_required
@@ -534,4 +576,33 @@ def edit_guru(request, guru_id):
         messages.success(request, 'Data Guru berhasil diubah.')
         return redirect('admin_guru_list')
 
-    return render(request, 'dashboards/edit_guru.html', {'guru': guru})
+    return render(request, 'dashboards/admin/edit_guru.html', {'guru': guru})
+
+
+@login_required
+def upload_profile_picture(request):
+    """View untuk menangani unggahan foto profil mandiri dari pengguna."""
+    if request.method == 'POST' and request.FILES.get('profile_picture'):
+        request.user.profile_picture = request.FILES['profile_picture']
+        request.user.save()
+        messages.success(request, 'Foto profil Anda berhasil diperbarui.')
+    else:
+        messages.error(request, 'Gagal memperbarui foto profil. File tidak valid.')
+    return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+
+
+@login_required
+def mark_notification_read(request, notification_id):
+    """View untuk menandai satu notifikasi sebagai telah dibaca."""
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return JsonResponse({'status': 'success'})
+
+
+@login_required
+def mark_all_notifications_read(request):
+    """View untuk menandai semua notifikasi pengguna sebagai telah dibaca."""
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    return JsonResponse({'status': 'success'})
+

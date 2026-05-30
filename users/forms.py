@@ -15,6 +15,11 @@ class ParentRegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'phone_number']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.setdefault('class', 'form-control')
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -51,5 +56,14 @@ class GuruRegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'phone_number']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.setdefault('class', 'form-control')
+
 class ImportFileForm(forms.Form):
     xlsx_file = forms.FileField(label="Upload Data (.xlsx/.csv)")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['xlsx_file'].widget.attrs.update({'class': 'form-control', 'accept': '.xlsx,.csv'})

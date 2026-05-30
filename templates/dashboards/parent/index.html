@@ -212,6 +212,98 @@
     </div>
   </div>
 
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+    <div class="lg:col-span-1">
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Pengajuan Izin
+          </h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Ajukan izin pulang, sakit, atau keperluan keluarga untuk anak Anda.
+          </p>
+          <form method="POST" class="mt-5 space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="submit_type" value="permit_request" />
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Nama Anak</label>
+              <select name="student" required>
+                <option value="">Pilih anak</option>
+                {% for child in children %}
+                <option value="{{ child.id }}">{{ child.name }} - {{ child.grade }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Mulai Izin</label>
+                <input type="date" name="start_date" required />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Tanggal Kembali</label>
+                <input type="date" name="end_date" required />
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Alasan Izin</label>
+              <textarea name="reason" rows="4" placeholder="Tuliskan alasan pengajuan izin..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-full">
+              Kirim Pengajuan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2">
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 bg-gray-50">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Riwayat Perizinan</h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Pantau status pengajuan izin yang sudah dikirim.
+          </p>
+        </div>
+        <div class="p-6 overflow-x-auto">
+          <table class="datatable w-full text-left text-sm text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+              <tr>
+                <th class="px-6 py-3">Santri</th>
+                <th class="px-6 py-3">Tanggal</th>
+                <th class="px-6 py-3">Alasan</th>
+                <th class="px-6 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for permit in permits %}
+              <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-medium text-gray-900">{{ permit.student.name }}</td>
+                <td class="px-6 py-4">{{ permit.start_date|date:"d M Y" }} - {{ permit.end_date|date:"d M Y" }}</td>
+                <td class="px-6 py-4">{{ permit.reason }}</td>
+                <td class="px-6 py-4">
+                  {% if permit.status == 'disetujui' %}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
+                  {% elif permit.status == 'ditolak' %}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
+                  {% else %}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                  Belum ada pengajuan izin.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-8">
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
       <div>

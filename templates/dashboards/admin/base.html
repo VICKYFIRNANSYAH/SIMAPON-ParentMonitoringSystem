@@ -1,14 +1,14 @@
 {% extends 'base.html' %} {% block content %}
-<div class="flex min-h-[calc(100vh-4rem)]">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-dark text-white shadow-lg hidden md:block">
-    <div class="p-6 border-b border-gray-700">
-      <h2 class="text-xl font-bold text-primary">Admin Panel</h2>
+<div class="admin-shell flex">
+  <aside class="admin-sidebar w-64 text-white hidden md:block">
+    <div class="p-6 border-b border-white/10">
+      <p class="text-xs font-bold uppercase text-emerald-200">SIMAPON</p>
+      <h2 class="mt-1 text-xl font-bold text-white">Admin Panel</h2>
     </div>
     <nav class="mt-6">
       <a
         href="{% url 'admin_dashboard' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if request.path == '/dashboard/admin/' %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if request.path == '/dashboard/admin/' %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -27,7 +27,7 @@
       </a>
       <a
         href="{% url 'admin_guru_list' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if 'guru' in request.path %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if 'guru' in request.path %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -46,7 +46,7 @@
       </a>
       <a
         href="{% url 'admin_santri_list' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if 'santri' in request.path %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if 'santri' in request.path %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -65,7 +65,7 @@
       </a>
       <a
         href="{% url 'admin_parent_list' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if 'parent' in request.path %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if 'parent' in request.path %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -84,7 +84,7 @@
       </a>
       <a
         href="{% url 'admin_finance_list' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if 'finance' in request.path %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if 'finance' in request.path %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -103,7 +103,7 @@
       </a>
       <a
         href="{% url 'admin_permit_list' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if 'permit' in request.path %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if 'permit' in request.path %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -122,7 +122,7 @@
       </a>
       <a
         href="{% url 'admin_behavior_list' %}"
-        class="flex items-center px-6 py-3 hover:bg-gray-800 transition-colors {% if 'behavior' in request.path %}bg-gray-800 border-l-4 border-primary{% endif %}"
+        class="admin-nav-link {% if 'behavior' in request.path %}is-active{% endif %}"
       >
         <svg
           class="h-5 w-5 mr-3 text-gray-400"
@@ -142,34 +142,19 @@
     </nav>
   </aside>
 
-  <!-- Main Content -->
-  <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+  <div class="flex-1 overflow-x-hidden overflow-y-auto">
+    <div class="md:hidden border-b border-slate-200 bg-white/90 px-4 py-3">
+      <div class="flex gap-2 overflow-x-auto text-sm font-semibold">
+        <a class="btn btn-soft whitespace-nowrap" href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a class="btn btn-secondary whitespace-nowrap" href="{% url 'admin_guru_list' %}">Guru</a>
+        <a class="btn btn-secondary whitespace-nowrap" href="{% url 'admin_santri_list' %}">Santri</a>
+        <a class="btn btn-secondary whitespace-nowrap" href="{% url 'admin_parent_list' %}">Wali</a>
+        <a class="btn btn-secondary whitespace-nowrap" href="{% url 'admin_finance_list' %}">SPP</a>
+      </div>
+    </div>
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {% block admin_content %}{% endblock %}
     </main>
   </div>
 </div>
 {% endblock %}
-
-<script>
-  // Toggle password display in admin lists. Passwords are not viewable in plaintext for security.
-  // This toggles a hint that admin can reset password via the edit form.
-  function togglePassword(btn, userId) {
-    try {
-      var container = btn.closest("td") || btn.parentElement;
-      var mask = container.querySelector(".password-mask");
-      if (!mask) return;
-      if (mask.dataset.revealed === "1") {
-        mask.textContent = "••••••••";
-        mask.dataset.revealed = "0";
-        btn.title = "Tampilkan/Sembunyikan Password";
-      } else {
-        mask.textContent = "Reset via Edit";
-        mask.dataset.revealed = "1";
-        btn.title = "Reset melalui halaman edit";
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-</script>

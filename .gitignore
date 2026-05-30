@@ -1,19 +1,27 @@
-# venv_linux/
-# venv_windows/
+# Virtual environments (highly environment specific, must be ignored)
+venv_linux/
+venv_windows/
+venv/
+.venv/
+env/
 
-# __pycache__/
-# *.py[cod]
-# *.pyo
-# *.pyd
-# __pypackages__/
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+__pypackages__/
 
-# # Local development files
+# Local IDE configuration & environment files
+.DS_Store
+.env
+.vscode/
+.idea/
+
+# SQLite Database and User Media Uploads
+# Kept commented-out to allow database sharing for immediate execution
 # db.sqlite3
 # media/
 
-# # Optional files
-# .DS_Store
-# .env
-
-# # Django static artifacts
-# staticfiles/
+# Django static build artifacts
+staticfiles/

@@ -15,6 +15,12 @@ class StudentForm(forms.ModelForm):
         self.fields['parent'].queryset = User.objects.filter(is_parent=True)
         self.fields['parent'].required = False
         self.fields['photo'].required = False
+        for field in self.fields.values():
+            field.widget.attrs.setdefault('class', 'form-control')
 
 class ImportStudentForm(forms.Form):
     xlsx_file = forms.FileField(label="Upload Data Santri (.xlsx/.csv)")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['xlsx_file'].widget.attrs.update({'class': 'form-control', 'accept': '.xlsx,.csv'})

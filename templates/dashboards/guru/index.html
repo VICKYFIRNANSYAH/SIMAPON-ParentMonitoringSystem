@@ -1,0 +1,179 @@
+{% extends 'base.html' %} {% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="md:flex md:items-center md:justify-between mb-8">
+    <div>
+      <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">
+        Dashboard Guru / Ustadz
+      </h2>
+      <p class="mt-1 text-sm text-gray-500">
+        Kelola catatan sikap santri dan proses pengajuan izin wali murid.
+      </p>
+    </div>
+    <span class="mt-4 md:mt-0 inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-white bg-primary">
+      Selamat datang, {{ user.username }}
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <p class="text-sm font-medium text-gray-500">Total Santri</p>
+        <p class="mt-2 text-3xl font-bold text-gray-900">{{ students_count }}</p>
+      </div>
+    </div>
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <p class="text-sm font-medium text-gray-500">Izin Menunggu</p>
+        <p class="mt-2 text-3xl font-bold text-amber-600">{{ pending_permits_count }}</p>
+      </div>
+    </div>
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <p class="text-sm font-medium text-gray-500">Catatan Sikap</p>
+        <p class="mt-2 text-3xl font-bold text-primary">{{ notes_count }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-1">
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Input Catatan Sikap
+          </h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Tambahkan prestasi atau pelanggaran santri.
+          </p>
+          <form method="POST" class="mt-5 space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="submit_type" value="behavior_note" />
+            {% for field in form %}
+            <div>
+              <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ field.label }}
+              </label>
+              {{ field }}
+              {% if field.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
+              {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-full">
+              Simpan Catatan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2">
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 bg-gray-50">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Pengajuan Izin Santri
+          </h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Setujui atau tolak pengajuan izin dari wali murid.
+          </p>
+        </div>
+        <div class="p-6 overflow-x-auto">
+          <table class="datatable w-full text-left text-sm text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+              <tr>
+                <th class="px-6 py-3">Santri</th>
+                <th class="px-6 py-3">Tanggal</th>
+                <th class="px-6 py-3">Alasan</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for permit in permits %}
+              <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-medium text-gray-900">{{ permit.student.name }}</td>
+                <td class="px-6 py-4">{{ permit.start_date|date:"d M Y" }} - {{ permit.end_date|date:"d M Y" }}</td>
+                <td class="px-6 py-4">{{ permit.reason }}</td>
+                <td class="px-6 py-4">
+                  {% if permit.status == 'disetujui' %}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
+                  {% elif permit.status == 'ditolak' %}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
+                  {% else %}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                  {% if permit.status == 'menunggu' %}
+                  <div class="flex gap-2">
+                    <form method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="permit_id" value="{{ permit.id }}" />
+                      <button type="submit" name="action" value="approve" class="text-green-600 hover:text-green-800 font-semibold">
+                        Setujui
+                      </button>
+                    </form>
+                    <form method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="permit_id" value="{{ permit.id }}" />
+                      <button type="submit" name="action" value="reject" class="text-red-600 hover:text-red-800 font-semibold">
+                        Tolak
+                      </button>
+                    </form>
+                  </div>
+                  {% else %} - {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                  Belum ada pengajuan izin.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-8">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200 bg-gray-50">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Riwayat Catatan Sikap
+      </h3>
+    </div>
+    <div class="p-6 overflow-x-auto">
+      <table class="datatable w-full text-left text-sm text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+          <tr>
+            <th class="px-6 py-3">Tanggal</th>
+            <th class="px-6 py-3">Santri</th>
+            <th class="px-6 py-3">Kategori</th>
+            <th class="px-6 py-3">Catatan</th>
+            <th class="px-6 py-3">Poin</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for note in behavior_notes %}
+          <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">{{ note.date|date:"d M Y" }}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">{{ note.student.name }}</td>
+            <td class="px-6 py-4">{{ note.get_category_display }}</td>
+            <td class="px-6 py-4">{{ note.description }}</td>
+            <td class="px-6 py-4 font-bold">{{ note.points }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+              Belum ada catatan sikap.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

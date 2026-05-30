@@ -38,7 +38,7 @@ Explore the user interface and main features of the **SIMAPON** web application 
 A welcoming portal with modern branding introducing the boarding school environment and key platform highlights.
 
 <p align="center">
-  <img src="static/screenshots/HalamanUtama.png" alt="SIMAPON Landing Page" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/HalamanUtama.jpeg" alt="SIMAPON Landing Page" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 2. Multi-Role Authentication
@@ -47,7 +47,7 @@ Secured entry pages allowing administrators, teachers, and parents to register a
 
 <p align="center">
   <img src="static/screenshots/HalamanLogin.png" alt="SIMAPON Login Page" width="48%" style="border-radius: 8px; margin-right: 2%; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-  <img src="static/screenshots/HalamanPendaftaran.png" alt="SIMAPON Registration Page" width="48%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/HalamanRegister.png" alt="SIMAPON Registration Page" width="48%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 3. Administrator Dashboard (Dashboard Admin)
@@ -55,7 +55,7 @@ Secured entry pages allowing administrators, teachers, and parents to register a
 A comprehensive backend command center displaying key metrics, recent registrations, leave requests, and financial updates.
 
 <p align="center">
-  <img src="static/screenshots/DashboardAdmin.png" alt="SIMAPON Admin Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/DashboardAdmin.jpeg" alt="SIMAPON Admin Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 4. Teacher Dashboard (Dashboard Guru)
@@ -63,7 +63,7 @@ A comprehensive backend command center displaying key metrics, recent registrati
 A tailored classroom portal for instructors to review leave permissions, log student conduct scoring, and track class activities.
 
 <p align="center">
-  <img src="static/screenshots/DashboardGuru.png" alt="SIMAPON Teacher Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/DashboardGuru.jpeg" alt="SIMAPON Teacher Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 5. Parent Monitoring Dashboard (Dashboard Wali)
@@ -174,11 +174,11 @@ SIMAPON-ParentMonitoringSystem/
 │   │   └── simapon.js                 # Dynamic DOM manipulation scripts
 │   ├── logo-simapon.png               # Official application brand emblem logo
 │   └── screenshots/                   # System UI view representations
-│       ├── HalamanUtama.png
+│       ├── HalamanUtama.jpeg
 │       ├── HalamanLogin.png
-│       ├── HalamanPendaftaran.png
-│       ├── DashboardAdmin.png
-│       ├── DashboardGuru.png
+│       ├── HalamanRegister.png
+│       ├── DashboardAdmin.jpeg
+│       ├── DashboardGuru.jpeg
 │       └── DashboardWali.png
 │
 └── templates/                         # HTML structure templates
@@ -330,7 +330,7 @@ Berikut adalah tampilan antarmuka dan fitur-fitur utama dari sistem **SIMAPON**:
 Pintu masuk yang ramah dengan branding modern, memperkenalkan lingkungan pondok pesantren dan poin-poin utama platform.
 
 <p align="center">
-  <img src="static/screenshots/HalamanUtama.png" alt="SIMAPON Landing Page" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/HalamanUtama.jpeg" alt="SIMAPON Landing Page" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 2. Autentikasi Multi-Role
@@ -339,7 +339,7 @@ Halaman registrasi dan login yang aman untuk memungkinkan administrator, guru, d
 
 <p align="center">
   <img src="static/screenshots/HalamanLogin.png" alt="SIMAPON Login Page" width="48%" style="border-radius: 8px; margin-right: 2%; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-  <img src="static/screenshots/HalamanPendaftaran.png" alt="SIMAPON Registration Page" width="48%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/HalamanRegister.png" alt="SIMAPON Registration Page" width="48%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 3. Dashboard Administrator (Dashboard Admin)
@@ -347,7 +347,7 @@ Halaman registrasi dan login yang aman untuk memungkinkan administrator, guru, d
 Pusat kendali admin untuk melihat metrik utama, data registrasi wali/guru terbaru, persetujuan izin keluar santri, serta verifikasi bukti SPP.
 
 <p align="center">
-  <img src="static/screenshots/DashboardAdmin.png" alt="SIMAPON Admin Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/DashboardAdmin.jpeg" alt="SIMAPON Admin Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 4. Dashboard Guru (Dashboard Guru)
@@ -355,7 +355,7 @@ Pusat kendali admin untuk melihat metrik utama, data registrasi wali/guru terbar
 Dasbor bagi guru pengajar untuk mengevaluasi skor kedisiplinan/perilaku santri, merekomendasikan izin keluar, dan memantau status murid.
 
 <p align="center">
-  <img src="static/screenshots/DashboardGuru.png" alt="SIMAPON Teacher Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+  <img src="static/screenshots/DashboardGuru.jpeg" alt="SIMAPON Teacher Dashboard" width="720" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
 </p>
 
 ### 5. Dashboard Wali Murid (Dashboard Wali)

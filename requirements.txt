@@ -1,3 +1,4 @@
 Django==6.0.5 # Web framework
 openpyxl==3.1.5 # File Excel
 Pillow==12.2.0 # Prosesing gambar
+pymysql>=1.2.3

@@ -7,6 +7,8 @@ env/
 
 # Python cache & compiled files
 __pycache__/
+*/__pycache__/
+*/*/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
@@ -15,13 +17,17 @@ __pypackages__/
 # Local IDE configuration & environment files
 .DS_Store
 .env
+.env.*
 .vscode/
 .idea/
 
 # SQLite Database and User Media Uploads
-# Kept commented-out to allow database sharing for immediate execution
-# db.sqlite3
-# media/
+db.sqlite3
+datadump.json
+media/
+
+# Production secrets override
+SIMAPON/settings_prod.py
 
 # Django static build artifacts
 staticfiles/

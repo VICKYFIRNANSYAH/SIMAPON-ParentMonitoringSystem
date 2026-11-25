@@ -305,7 +305,7 @@ This project was developed by:
 | <img src="https://github.com/VICKYFIRNANSYAH.png" width="48" style="border-radius:50%;" /> | **Muhammad Vicky Firnansyah**<br />`25051204089` | Group Lead, Architecture, Multi-role Dashboards | [@VICKYFIRNANSYAH](https://github.com/VICKYFIRNANSYAH) |
 | <img src="https://github.com/24wahyus-creator.png" width="48" style="border-radius:50%;" /> | **M. Wahyu Setya Agung**<br />`25051204095` | Financial System & Excel Parser Integration | [@24wahyus-creator](https://github.com/24wahyus-creator) |
 | <img src="https://github.com/aldiokhasy.png" width="48" style="border-radius:50%;" /> | **Aldio Khasy Shiham**<br />`25051204238` | Permits Workflow & Character Score Logs | [@aldiokhasy](https://github.com/aldiokhasy) |
-| <img src="https://github.com/ahmadsyaifulloh274-ai.png" width="48" style="border-radius:50%;" /> | **Ahmad Syaifulloh**<br />`25051204385` | Database Optimization & Technical Documentation | [@el-mas-dev](https://github.com/el-mas-dev) |
+| <img src="https://github.com/el-mas-dev.png" width="48" style="border-radius:50%;" /> | **Ahmad Syaifulloh**<br />`25051204385` | Database Optimization & Technical Documentation | [@el-mas-dev](https://github.com/el-mas-dev) |
 
 ---
 
